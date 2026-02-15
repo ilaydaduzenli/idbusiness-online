@@ -21,8 +21,8 @@
   --color-zinc-900: #18181b;
   --color-zinc-950: #09090b;
 
-  --animate-scroll-slow: scroll-y 20s linear infinite;
-  --animate-scroll-slower: scroll-y 30s linear infinite;
+  --animate-scroll-slow: scroll-y-50 20s linear infinite;
+  --animate-scroll-slower: scroll-y-50 30s linear infinite;
 
   @keyframes scroll-y {
     0% {
@@ -33,11 +33,156 @@
       transform: translateY(-50%);
     }
   }
+
+  @keyframes scroll-x {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+.animate-scroll-y {
+  animation: scroll-y var(--duration, 40s) linear infinite;
+}
+
+.animate-scroll-x {
+  animation: scroll-x var(--duration, 40s) linear infinite;
+}
+
+.pause-on-hover:hover .animate-scroll-y,
+.pause-on-hover:hover .animate-scroll-x {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .animate-scroll-y,
+  .animate-scroll-x,
+  .animate-marquee,
+  .animate-marquee-reverse {
+    animation-play-state: paused !important;
+  }
+}
+
+/* Horizontal Marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes marquee-reverse {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--marquee-speed, 45s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee-reverse var(--marquee-speed, 45s) linear infinite;
+}
+
+.pause-on-hover:hover .animate-marquee,
+.pause-on-hover:hover .animate-marquee-reverse {
+  animation-play-state: paused;
+}
+
+/* ── Hero Glass Pill Buttons ─────────────────────────────── */
+
+@keyframes glow-breathe {
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px 0 var(--glow-color, rgba(16, 185, 129, 0.15)), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  }
+
+  50% {
+    box-shadow: 0 0 28px 4px var(--glow-color, rgba(16, 185, 129, 0.25)), inset 0 1px 0 0 rgba(255, 255, 255, 0.14);
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+
+  100% {
+    transform: translateX(200%) skewX(-15deg);
+  }
+}
+
+.hero-btn-glass {
+  position: relative;
+  overflow: hidden;
+  animation: glow-breathe 4s ease-in-out infinite;
+}
+
+.hero-btn-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 40%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.08) 60%, transparent 100%);
+  animation: shimmer-sweep 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-btn-glass-secondary {
+  --glow-color: rgba(161, 161, 170, 0.1);
+}
+
+.hero-btn-glass-secondary::after {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.04) 40%, rgba(255, 255, 255, 0.08) 50%, rgba(255, 255, 255, 0.04) 60%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .hero-btn-glass,
+  .hero-btn-glass-secondary {
+    animation: none !important;
+  }
+
+  .hero-btn-glass::after,
+  .hero-btn-glass-secondary::after {
+    animation: none !important;
+    display: none;
+  }
 }
 
 :root {
+  --background: var(--color-zinc-50);
+  --foreground: var(--color-zinc-900);
+  --muted-text: var(--color-zinc-500);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(24, 24, 27, 0.08);
+  --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --input-bg: rgba(24, 24, 27, 0.03);
+  --surface-muted: var(--color-zinc-100);
+}
+
+.dark {
   --background: var(--color-zinc-950);
   --foreground: var(--color-zinc-50);
+  --muted-text: var(--color-zinc-500);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --surface-muted: rgba(255, 255, 255, 0.02);
 }
 
 body {
@@ -46,19 +191,28 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 @utility glass {
-  background-color: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+
+  @media (min-width: 1024px) {
+    backdrop-filter: blur(10px);
+  }
 }
 
 @utility glass-card {
-  background-color: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+
+  @media (min-width: 1024px) {
+    backdrop-filter: blur(12px);
+  }
 }
 
 /* Hide scrollbar for clean UI */

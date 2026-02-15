@@ -13,6 +13,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+import { ThemeProvider } from "@/components/theme-provider";
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://idbusiness.co'),
   title: {
@@ -54,12 +56,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <div className="pt-16">
-          {children}
-        </div>
+        <ThemeProvider defaultTheme="dark" storageKey="idbusiness-theme">
+          <Header />
+          <div className="pt-16">
+            {children}
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );
